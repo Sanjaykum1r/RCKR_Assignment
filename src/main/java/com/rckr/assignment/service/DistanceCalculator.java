@@ -31,13 +31,18 @@ public class DistanceCalculator {
         allDistinctCurrencyCountry=new HashMap<>();
         Set<String> repeatedCurrency=new HashSet<>();
         for(Country country: countryList){
-            Currency currency=country.getCurrencies().get(0);
-            if(allDistinctCurrencyCountry.containsKey(currency.getName()))
-                repeatedCurrency.add(currency.getName());
-            else
-                allDistinctCurrencyCountry.put(currency.getName(),country);
+            List<Currency> currencyList=country.getCurrencies();
+            for(Currency currency:currencyList) {
+                if (allDistinctCurrencyCountry.containsKey(currency.getName()))
+                    repeatedCurrency.add(currency.getName());
+                else
+                    allDistinctCurrencyCountry.put(currency.getName(), country);
+            }
         }
         allDistinctCurrencyCountry.keySet().removeAll(repeatedCurrency);
+        for(Map.Entry<String,Country> vals:allDistinctCurrencyCountry.entrySet()){
+            log.info("The currency is {} and country is {}",vals.getKey(),vals.getValue().getName());
+        }
     }
 
     public String calculateDistance(long population,int maxVal){
