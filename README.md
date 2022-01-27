@@ -43,7 +43,7 @@
 ##Configuration
 
 - @GetMapping("/getDistance?population=20792&maxInput=20)
-  * This **API** Takes two data inputs population and number of country(maxInput) as url requestParam.
+  * This **API** Takes two data inputs population and number of country for which we want to find the distance(maxInput) as url requestParam.
   * Return: The sum of the length of all lines (in kms) that can be drawn between co-ordinates of these countries.
 
 
@@ -62,7 +62,7 @@
     <td>http://localhost:8080/getDistance?population=20792&maxInput=20</td>
     <td>Population : 20792
 MaxInput : 20 </td>
-<td>1825654.14</td>
+<td>1836836.25</td>
   </tr>
 </table>
 </html>
