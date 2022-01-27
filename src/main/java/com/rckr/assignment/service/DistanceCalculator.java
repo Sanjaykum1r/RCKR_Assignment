@@ -28,23 +28,25 @@ public class DistanceCalculator {
     @PostConstruct
     public void getAllCountries() throws URISyntaxException, IOException {
         List<Country> countryList = Util.getAllCountries();
-        allDistinctCurrencyCountry=new TreeMap<>();
+        allDistinctCurrencyCountry=new HashMap<>();
+        Set<String> repeatedCurrency=new HashSet<>();
         for(Country country: countryList){
             Currency currency=country.getCurrencies().get(0);
-            if(allDistinctCurrencyCountry.get(currency.getName())!=null)
-                allDistinctCurrencyCountry.remove(currency.getName());
+            if(allDistinctCurrencyCountry.containsKey(currency.getName()))
+                repeatedCurrency.add(currency.getName());
             else
                 allDistinctCurrencyCountry.put(currency.getName(),country);
         }
+        allDistinctCurrencyCountry.keySet().removeAll(repeatedCurrency);
     }
 
     public String calculateDistance(long population,int maxVal){
         List<Country> finalList=getFinalCountryList(population,maxVal);
         double finalAns=0;
-        for(int index=0;index<maxVal;++index){
+        for(int index=0;index<maxVal && index<finalList.size() ;++index){
             Country country1= finalList.get(index);
             log.info("Indexed country is {} with population {}",country1.getName(),country1.getPopulation());
-            for(int findWith=index+1;findWith<maxVal;++findWith){
+            for(int findWith=index+1;findWith<maxVal && findWith < finalList.size() ;++findWith){
                 Country country2= finalList.get(findWith);
                 finalAns+=getDistance(country1,country2);
             }
@@ -74,9 +76,9 @@ public class DistanceCalculator {
     private List<Country> getFinalCountryList(long population, int maxVal) {
         log.info("Size of the map is {}",allDistinctCurrencyCountry.size());
         return allDistinctCurrencyCountry.values().stream().
+                sorted(Comparator.comparing(Country::getPopulation)).
                 filter(country->country.getPopulation()>=population).
                 limit(maxVal).
-                sorted(Comparator.comparing(Country::getPopulation)).
                 collect(Collectors.toList());
     }
 
